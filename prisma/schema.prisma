@@ -322,16 +322,11 @@ model GanttObject {
   name                  String? @unique // task名
   id                    String @map("object_id")               // 数据库中的 object_id 映射为 Prisma 模型中的 id 字段
   progress              Int // 进度条
-  type                  GanttType // 手机 +86
-  password              String? @db.Text // 密码
+  type                  GanttType
+  hideChildren          Boolean @default(false)
+  displayOrder          Int
+  dependencies          GanttObject[]   @ignore // 忽略 dependencies 反向关系字段
 
-  // relation
-  oauths       OAuth[]
-  orders       Order[]
-  chatSessions ChatSession[]
-  chatMessages ChatMessage[]
-
-  createdAt DateTime @default(now()) @db.Timestamp(6) // 注册时间
-  updatedAt DateTime @default(now()) @updatedAt
-  isBlocked Boolean  @default(false) // 是否被封禁
+  start                 DateTime @default(now())
+  end                   DateTime @default(now())
 }
