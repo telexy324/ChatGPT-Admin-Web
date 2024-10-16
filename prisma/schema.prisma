@@ -14,6 +14,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 // =======
@@ -318,15 +319,25 @@ enum GanttType {
 }
 
 model GanttObject {
-  autoIncrementId       Int     @id @default(autoincrement()) @map("id") // 数据库中的 id 字段映射为 autoIncrementId
+  autoIncrementId       Int     @id @default(autoincrement()) // 数据库中的 id 字段映射为 autoIncrementId
   name                  String? @unique // task名
   id                    String @map("object_id")               // 数据库中的 object_id 映射为 Prisma 模型中的 id 字段
   progress              Int // 进度条
   type                  GanttType
   hideChildren          Boolean @default(false)
   displayOrder          Int
-  dependencies          GanttObject[]   @ignore // 忽略 dependencies 反向关系字段
+  dependencies          Depends[]   @relation("dependencies")
+  dependents            Depends[]   @relation("dependents")
 
   start                 DateTime @default(now())
   end                   DateTime @default(now())
+}
+
+model Depends {
+  dependencies   GanttObject @relation("dependencies", fields: [dependenciesId], references: [autoIncrementId])
+  dependenciesId Int
+  dependents     GanttObject @relation("dependents", fields: [dependentsId], references: [autoIncrementId])
+  dependentsId   Int
+
+  @@id([dependentsId, dependenciesId])
 }
