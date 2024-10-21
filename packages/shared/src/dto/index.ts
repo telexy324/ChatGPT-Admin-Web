@@ -69,3 +69,10 @@ export namespace OrderDTO {
   });
   export type NewOrderDto = z.infer<typeof NewOrderSchema>;
 }
+
+export namespace GanttObjectDTO {
+  export const NewGanttObjectSchema = z.object({
+    productId: z.number(),
+  });
+  export type NewOrderDto = z.infer<typeof NewGanttObjectSchema>;
+}

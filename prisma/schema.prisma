@@ -327,17 +327,13 @@ model GanttObject {
   hideChildren          Boolean @default(false)
   displayOrder          Int
   dependencies          Depends[]   @relation("dependencies")
-  dependents            Depends[]   @relation("dependents")
 
   start                 DateTime @default(now())
   end                   DateTime @default(now())
 }
 
 model Depends {
+  id             Int      @id @default(autoincrement())
   dependencies   GanttObject @relation("dependencies", fields: [dependenciesId], references: [autoIncrementId])
   dependenciesId Int
-  dependents     GanttObject @relation("dependents", fields: [dependentsId], references: [autoIncrementId])
-  dependentsId   Int
-
-  @@id([dependentsId, dependenciesId])
 }

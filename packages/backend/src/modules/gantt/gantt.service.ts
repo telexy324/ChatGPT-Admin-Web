@@ -3,6 +3,9 @@ import { CustomPrismaService } from 'nestjs-prisma';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
+import {BizException} from "@/common/exceptions/biz.exception";
+import {ErrorCodeEnum, Role} from "shared";
+import { GanttType } from '@prisma/client';
 
 @Injectable()
 export class GanttService {
@@ -12,72 +15,42 @@ export class GanttService {
   ) {}
 
   /* 获取用户信息 */
-  async getInfo(userId: number) {
-    const user = await this.prisma.client.user.findUnique({
+  async getInfo(autoIncrementId: number) {
+    const ganttObject = await this.prisma.client.ganttObject.findUnique({
       where: {
-        id: userId,
-      },
-      select: {
-        id: true,
-        name: true,
-        role: true,
-        email: true,
-        phone: true,
-        password: true,
+        autoIncrementId: autoIncrementId,
       },
     });
-    const isPasswordSet = !!user.password;
-    delete user.password;
-    const currentTime = new Date();
-    const activatedOrders = await this.prisma.client.order.findMany({
-      where: {
-        AND: [
-          {
-            userId: userId,
-          },
-          {
-            startAt: {
-              lte: currentTime,
-            },
-          },
-          {
-            endAt: {
-              gte: currentTime,
-            },
-          },
-        ],
-      },
-      orderBy: {
-        createdAt: 'desc', // 最近的排在前面
-      },
-    });
-
-    return {
-      ...user,
-      todos: [...(!isPasswordSet ? ['password'] : [])],
-      isPremium: activatedOrders.length > 0,
-    };
   }
 
-  async updateName(userId: number, name: string) {
-    const user = await this.prisma.client.user.update({
-      where: {
-        id: userId,
-      },
+  async create(
+    name: string,
+    id: string,
+    progress: number,
+    type: GanttType,
+    hideChildren: boolean,
+    displayOrder: number,
+    dependencies: number[],
+    dependents: number[],
+    start: string,
+    end: string,) {
+    await this.prisma.client.ganttObject.create({
       data: {
         name,
-      },
-      select: {
-        name: true,
-      },
-    });
-    return user;
-  }
-
-  async getSettings(userId: number) {
-    return this.prisma.client.chatSetting.findUnique({
-      where: {
-        userId,
+        id,
+        progress,
+        type,
+        hideChildren,
+        displayOrder,
+        dependencies: {
+          create: dependencies.map(id => ({
+            depends: {
+              connect: { id: id }
+            },
+          }))
+        },
+        start,
+        end,
       },
     });
   }
