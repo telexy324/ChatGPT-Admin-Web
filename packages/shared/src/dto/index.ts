@@ -1,4 +1,5 @@
 import z from 'zod';
+import { GanttType } from '@prisma/client';
 
 export namespace AuthDTO {
   const email = z.string().email();
@@ -72,7 +73,21 @@ export namespace OrderDTO {
 
 export namespace GanttObjectDTO {
   export const NewGanttObjectSchema = z.object({
-    productId: z.number(),
+    name: z.string().min(1, {
+      message: "gantt object name is required",
+    }),
+    id: z.string().min(1, {
+      message: "gantt object id is required",
+    }),
+    progress: z.optional(z.number()),
+    type: z.enum([GanttType.Task, GanttType.Project], {
+      errorMap: (issue, ctx) => {
+        return { message: `type must be one of: ${Object.values(GanttType).join(', ')}` };
+      },
+    }),
+    hideChildren: z.optional(z.boolean()),
+    displayOrder: z.number().
+    code: z.optional(z.string()),
   });
   export type NewOrderDto = z.infer<typeof NewGanttObjectSchema>;
 }
