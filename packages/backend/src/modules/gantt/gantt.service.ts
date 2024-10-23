@@ -41,28 +41,61 @@ export class GanttService {
     type: GanttType,
     hideChildren: boolean,
     displayOrder: number,
-    dependencies: number[],
-    dependents: number[],
+    dependsOnIds: number[],
+    dependedOn: number[],
     start: string,
     end: string,) {
-    await this.prisma.client.ganttObject.create({
-      data: {
-        name,
-        id,
-        progress,
-        type,
-        hideChildren,
-        displayOrder,
-        dependsOn: {
-          create: dependencies.map(id => ({
-            depends: {
-              connect: { dependsOnid: id }
-            },
-          }))
-        },
-        start,
-        end,
-      },
+    // await this.prisma.client.ganttObject.create({
+    //   data: {
+    //     name,
+    //     id,
+    //     progress,
+    //     type,
+    //     hideChildren,
+    //     displayOrder,
+    //     dependsOn: {
+    //       create: dependsOn.map(id => ({
+    //         depends: {
+    //           connect: {
+    //             dependsOnId: id,
+    //             dependedOnId:
+    //           }
+    //         },
+    //       }))
+    //     },
+    //     start,
+    //     end,
+    //   },
+    // });
+    const result = await this.prisma.client.$transaction(async (prisma) => {
+      // Step 1: 先创建 GanttObject
+      const createdGanttObject = await prisma.ganttObject.create({
+        data: {
+          name,
+          id,
+          progress,
+          type,
+          hideChildren,
+          displayOrder,
+          start,
+          end,
+        }
+      });
+
+      // Step 2: 创建 Depends，dependsOnIds 是你传入的上层 ID 数组
+      const dependsData = dependsOnIds.map((dependsOnId) => ({
+        dependsOnId: dependsOnId,               // 数组中的 dependsOnId
+        dependedOnId: createdGanttObject.autoIncrementId, // 刚刚创建的 GanttObject 的 autoIncrementId
+      }));
+
+      // Step 3: 批量创建 Depends 记录
+      const createdDepends = await prisma.depends.createMany({
+        data: dependsData,
+      });
+
+      return { createdGanttObject, createdDepends };
     });
+
+    return result;
   }
 }
