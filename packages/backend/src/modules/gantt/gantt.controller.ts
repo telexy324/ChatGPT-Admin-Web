@@ -6,8 +6,8 @@ import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
 
 import { GanttService } from './gantt.service';
-import {ZodValidationPipe} from "@/common/pipes/zod";
-import {OrderDTO} from "shared";
+import { ZodValidationPipe } from "@/common/pipes/zod";
+import { GanttObjectDTO } from "shared";
 
 const nameSchema = Joi.string().min(4).max(20).required();
 
@@ -26,12 +26,12 @@ export class GanttController {
   @Put('name')
   async createObject(
     @Payload('id') userId: number,
-    @Body(new ZodValidationPipe(OrderDTO.NewOrderSchema))
-      body: OrderDTO.NewOrderDto,
+    @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))
+      body: GanttObjectDTO.NewGanttObjectDto,
   ) {
     return {
       success: true,
-      data: await this.ganttService.updateName(userId, name),
+      data: await this.ganttService.(userId, name),
     };
   }
 }

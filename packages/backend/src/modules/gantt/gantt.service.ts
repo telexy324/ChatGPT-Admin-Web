@@ -20,6 +20,17 @@ export class GanttService {
       where: {
         autoIncrementId: autoIncrementId,
       },
+      include: {
+        dependsOn: {
+          select: {
+            dependsOn: {
+              select: {
+                id: true
+              }
+            }
+          }
+        }
+      }
     });
   }
 
@@ -42,10 +53,10 @@ export class GanttService {
         type,
         hideChildren,
         displayOrder,
-        dependencies: {
+        dependsOn: {
           create: dependencies.map(id => ({
             depends: {
-              connect: { id: id }
+              connect: { dependsOnid: id }
             },
           }))
         },

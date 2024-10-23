@@ -1,5 +1,5 @@
 /* Data Transfer Object */
-export { AuthDTO, OrderDTO } from './dto';
+export { AuthDTO, OrderDTO, GanttObjectDTO } from './dto';
 /* Types */
 export * from './types';
 export * from './config';

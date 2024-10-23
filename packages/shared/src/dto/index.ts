@@ -86,8 +86,10 @@ export namespace GanttObjectDTO {
       },
     }),
     hideChildren: z.optional(z.boolean()),
-    displayOrder: z.number().
-    code: z.optional(z.string()),
+    displayOrder: z.number(),
+    dependsOn: z.array(z.string()).optional(),
+    start: z.string(),
+    end: z.string(),
   });
-  export type NewOrderDto = z.infer<typeof NewGanttObjectSchema>;
+  export type NewGanttObjectDto = z.infer<typeof NewGanttObjectSchema>;
 }
