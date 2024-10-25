@@ -7,11 +7,11 @@ import { JoiValidationPipe } from '@/common/pipes/joi';
 
 import { GanttService } from './gantt.service';
 import { ZodValidationPipe } from "@/common/pipes/zod";
-import { GanttObjectDTO } from "shared";
+import {GanttObjectDTO, OrderDTO} from "shared";
 
 const nameSchema = Joi.string().min(4).max(20).required();
 
-@Controller('user')
+@Controller('gantt')
 export class GanttController {
   constructor(private readonly ganttService: GanttService) {}
 
@@ -29,9 +29,23 @@ export class GanttController {
     @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))
       body: GanttObjectDTO.NewGanttObjectDto,
   ) {
+    const ganttObject, depends = await this.ganttService.create(
+      body.name,
+      body.id,
+      body.progress,
+      body.type,
+      body.hideChildren,
+      body.displayOrder,
+      body.dependsOn,
+      body.start,
+      body.end,
+    );
     return {
       success: true,
-      data: await this.ganttService.(userId, name),
+      data: {
+        ganttObject: ganttObject,
+        depends: depends,
+      },
     };
   }
 }

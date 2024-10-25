@@ -87,7 +87,7 @@ export namespace GanttObjectDTO {
     }),
     hideChildren: z.optional(z.boolean()),
     displayOrder: z.number(),
-    dependsOn: z.array(z.string()).optional(),
+    dependsOn: z.array(z.number()).optional(),
     start: z.string(),
     end: z.string(),
   });

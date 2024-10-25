@@ -42,32 +42,9 @@ export class GanttService {
     hideChildren: boolean,
     displayOrder: number,
     dependsOnIds: number[],
-    dependedOn: number[],
     start: string,
     end: string,) {
-    // await this.prisma.client.ganttObject.create({
-    //   data: {
-    //     name,
-    //     id,
-    //     progress,
-    //     type,
-    //     hideChildren,
-    //     displayOrder,
-    //     dependsOn: {
-    //       create: dependsOn.map(id => ({
-    //         depends: {
-    //           connect: {
-    //             dependsOnId: id,
-    //             dependedOnId:
-    //           }
-    //         },
-    //       }))
-    //     },
-    //     start,
-    //     end,
-    //   },
-    // });
-    const result = await this.prisma.client.$transaction(async (prisma) => {
+    return this.prisma.client.$transaction(async (prisma) => {
       // Step 1: 先创建 GanttObject
       const createdGanttObject = await prisma.ganttObject.create({
         data: {
@@ -95,7 +72,5 @@ export class GanttService {
 
       return { createdGanttObject, createdDepends };
     });
-
-    return result;
   }
 }
