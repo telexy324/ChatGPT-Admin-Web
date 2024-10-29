@@ -29,7 +29,7 @@ export class GanttController {
     @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))
       body: GanttObjectDTO.NewGanttObjectDto,
   ) {
-    const ganttObject, depends = await this.ganttService.create(
+    const gantt = await this.ganttService.create(
       body.name,
       body.id,
       body.progress,
@@ -43,8 +43,8 @@ export class GanttController {
     return {
       success: true,
       data: {
-        ganttObject: ganttObject,
-        depends: depends,
+        ganttObject: gantt.createdGanttObject,
+        depends: gantt.createdDepends,
       },
     };
   }

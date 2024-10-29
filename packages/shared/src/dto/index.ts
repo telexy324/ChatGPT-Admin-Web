@@ -1,5 +1,4 @@
 import z from 'zod';
-import { GanttType } from '@prisma/client';
 
 export namespace AuthDTO {
   const email = z.string().email();
@@ -69,6 +68,11 @@ export namespace OrderDTO {
     productId: z.number(),
   });
   export type NewOrderDto = z.infer<typeof NewOrderSchema>;
+}
+
+enum GanttType {
+  Task = "Task",
+  Project = "Project"
 }
 
 export namespace GanttObjectDTO {
