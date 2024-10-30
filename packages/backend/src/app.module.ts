@@ -13,6 +13,7 @@ import { DashboardModule } from '@/modules/dashboard/dashboard.module';
 import { OrderModule } from '@/modules/order/order.module';
 import { ProductModule } from '@/modules/product/product.module';
 import { UserModule } from '@/modules/user/user.module';
+import { GanttModule } from '@/modules/gantt/gantt.module';
 import { ExtendedPrismaConfigService } from '@/processors/database/prisma.service';
 
 import { AppController } from './app.controller';
@@ -47,6 +48,7 @@ import { AppService } from './app.service';
     JwtModule,
     DashboardModule,
     ProductModule,
+    GanttModule,
   ],
   controllers: [AppController],
   providers: [

@@ -9,13 +9,21 @@ import { GanttService } from './gantt.service';
 import { ZodValidationPipe } from "@/common/pipes/zod";
 import {GanttObjectDTO, OrderDTO} from "shared";
 
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
+
 const nameSchema = Joi.string().min(4).max(20).required();
 
+@ApiTags('Gantt - 甘特图模块')
 @Controller('gantt')
 export class GanttController {
   constructor(private readonly ganttService: GanttService) {}
 
   @Get('info')
+  @ApiOperation({ summary: '获取甘特图对象' })
   async getInfo(@Payload('id') userId: number) {
     return {
       success: true,
@@ -24,6 +32,7 @@ export class GanttController {
   }
 
   @Put('name')
+  @ApiOperation({ summary: '添加甘特图对象' })
   async createObject(
     @Payload('id') userId: number,
     @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))

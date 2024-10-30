@@ -12,6 +12,8 @@ import { PrismaExceptionFilter } from '@/common/filters/prisma-client-execption'
 
 import { AppModule } from './app.module';
 
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
 const CONFIG_PATH = join(__dirname, '../../../config.json');
 
 const DEFAULT_CONFIG = {
@@ -85,6 +87,11 @@ async function bootstrap() {
     },
   );
 
+  const documentBuilder = new DocumentBuilder()
+    .setTitle('ChatGPT-Admin-Web')
+    .setDescription(`ChatGPT-Admin-Web API document`)
+    .setVersion('1.0')
+
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: '*',
@@ -95,6 +102,12 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalFilters(new PrismaExceptionFilter());
   app.setGlobalPrefix('api');
+
+  const document = SwaggerModule.createDocument(app, documentBuilder.build(), {
+    ignoreGlobalPrefix: false,
+  })
+  SwaggerModule.setup('api-docs', app, document)
+
   await app.listen(
     configService.get('backend').port ??
       configService.get('port')?.backend ??
