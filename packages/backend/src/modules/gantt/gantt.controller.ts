@@ -14,6 +14,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
+import {CreateGanttObjectDto} from "@/modules/gantt/gantt.dto";
 
 const nameSchema = Joi.string().min(4).max(20).required();
 
@@ -36,7 +37,7 @@ export class GanttController {
   async createObject(
     @Payload('id') userId: number,
     @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))
-      body: GanttObjectDTO.NewGanttObjectDto,
+      body: CreateGanttObjectDto,
   ) {
     const gantt = await this.ganttService.create(
       body.name,

@@ -92,6 +92,13 @@ async function bootstrap() {
     .setDescription(`ChatGPT-Admin-Web API document`)
     .setVersion('1.0')
 
+  documentBuilder.addSecurity('auth', {
+    description: '输入令牌（Enter the token）',
+    type: 'http',
+    scheme: 'bearer',
+    bearerFormat: 'JWT',
+  })
+
   const configService = app.get(ConfigService);
   app.enableCors({
     origin: '*',
@@ -106,7 +113,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, documentBuilder.build(), {
     ignoreGlobalPrefix: false,
   })
-  SwaggerModule.setup('api-docs', app, document)
+  SwaggerModule.setup('api-docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // 保持登录
+    },
+  })
 
   await app.listen(
     configService.get('backend').port ??

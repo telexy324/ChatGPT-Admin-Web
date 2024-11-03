@@ -3,8 +3,6 @@ import { CustomPrismaService } from 'nestjs-prisma';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ExtendedPrismaClient } from '@/processors/database/prisma.extension';
-import {BizException} from "@/common/exceptions/biz.exception";
-import {ErrorCodeEnum, Role} from "shared";
 import { GanttType } from '@prisma/client';
 
 @Injectable()

@@ -62,6 +62,12 @@ const CONFIG_SCHEMA: ISettingSchema[] = [
       },
     ],
   },
+  {
+    key: 'logger',
+    type: 'select',
+    label: '日志级别',
+    selectOptions: ['debug', 'info'],
+  },
 ];
 
 @Injectable()
