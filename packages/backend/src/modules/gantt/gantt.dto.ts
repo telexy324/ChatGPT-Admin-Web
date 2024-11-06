@@ -1,4 +1,4 @@
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
 enum GanttType {
   Task = "Task",
@@ -24,7 +24,10 @@ export class CreateGanttObjectDto {
   @ApiProperty({ description: '用户的名字' })
   displayOrder: number
 
-  @ApiProperty({ description: '用户的名字' })
+  @ApiPropertyOptional({
+    type: Number,
+    isArray: true,
+  })
   dependsOn?: number[]
 
   @ApiProperty({ description: '用户的名字' })

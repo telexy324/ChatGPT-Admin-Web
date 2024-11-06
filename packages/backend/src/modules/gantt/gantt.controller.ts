@@ -10,6 +10,7 @@ import { ZodValidationPipe } from "@/common/pipes/zod";
 import {GanttObjectDTO, OrderDTO} from "shared";
 
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -34,6 +35,7 @@ export class GanttController {
 
   @Put('name')
   @ApiOperation({ summary: '添加甘特图对象' })
+  @ApiBearerAuth('auth')
   async createObject(
     @Payload('id') userId: number,
     @Body(new ZodValidationPipe(GanttObjectDTO.NewGanttObjectSchema))
