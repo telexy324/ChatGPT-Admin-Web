@@ -16,6 +16,8 @@ export class AllExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<FastifyReply>();
     const request = ctx.getRequest<FastifyRequest>();
 
+    console.log(exception)
+
     if (request.method === 'OPTIONS') {
       return response.status(HttpStatus.OK).send();
     }

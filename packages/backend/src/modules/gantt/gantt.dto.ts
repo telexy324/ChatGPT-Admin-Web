@@ -36,3 +36,8 @@ export class CreateGanttObjectDto {
   @ApiProperty({ description: '用户的名字' })
   end: string
 }
+
+export class GetGanttObjectDtoByAutoIncrementIdDto {
+  @ApiProperty({ description: '甘特图自增id' })
+  autoIncrementId: number
+}

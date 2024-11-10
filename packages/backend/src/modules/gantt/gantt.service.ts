@@ -64,7 +64,74 @@ export class GanttService {
       }));
 
       // Step 3: 批量创建 Depends 记录
-      const createdDepends = await prisma.depends.createMany({
+      const createdDepends = await prisma.depends.createManyAndReturn({
+        data: dependsData,
+      });
+
+      return { createdGanttObject, createdDepends };
+    });
+  }
+
+  async createOrUpdate(
+    name: string,
+    id: string,
+    progress: number,
+    type: GanttType,
+    hideChildren: boolean,
+    displayOrder: number,
+    dependsOnIds: number[],
+    start: string,
+    end: string,) {
+    return this.prisma.client.$transaction(async (prisma) => {
+      // Step 1: 先创建 GanttObject
+      const createdGanttObject = await prisma.ganttObject.upsert({
+        where: {
+          id: id,
+        },
+        update: {
+          name,
+          id,
+          progress,
+          type,
+          hideChildren,
+          displayOrder,
+          start,
+          end,
+        },
+        create: {
+          name,
+          id,
+          progress,
+          type,
+          hideChildren,
+          displayOrder,
+          start,
+          end,
+        },
+      });
+
+      // const existDepends = await prisma.depends.findMany({
+      //   where: {
+      //     dependedOnId: createdGanttObject.autoIncrementId,
+      //     dependsOnId: {
+      //       notIn: dependsOnIds,
+      //     },
+      //   },
+      // });
+      await prisma.depends.deleteMany({
+        where: {
+          dependedOnId: createdGanttObject.autoIncrementId,
+        }
+      })
+
+      // Step 2: 创建 Depends，dependsOnIds 是你传入的上层 ID 数组
+      const dependsData = dependsOnIds.map((dependsOnId) => ({
+        dependsOnId: dependsOnId,               // 数组中的 dependsOnId
+        dependedOnId: createdGanttObject.autoIncrementId, // 刚刚创建的 GanttObject 的 autoIncrementId
+      }));
+
+      // Step 3: 批量创建 Depends 记录
+      const createdDepends = await prisma.depends.createManyAndReturn({
         data: dependsData,
       });
 

@@ -26,6 +26,7 @@ export class GanttController {
 
   @Get('info')
   @ApiOperation({ summary: '获取甘特图对象' })
+  @ApiBearerAuth('auth')
   async getInfo(@Payload('id') userId: number) {
     return {
       success: true,
@@ -33,7 +34,7 @@ export class GanttController {
     };
   }
 
-  @Put('name')
+  @Put('new')
   @ApiOperation({ summary: '添加甘特图对象' })
   @ApiBearerAuth('auth')
   async createObject(
