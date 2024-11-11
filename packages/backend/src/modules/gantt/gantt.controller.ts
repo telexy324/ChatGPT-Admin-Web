@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import {Body, Controller, Get, Param, Put} from '@nestjs/common';
 
 import { Payload } from '@/common/guards/auth.guard';
 import { JoiValidationPipe } from '@/common/pipes/joi';
@@ -24,13 +24,17 @@ const nameSchema = Joi.string().min(4).max(20).required();
 export class GanttController {
   constructor(private readonly ganttService: GanttService) {}
 
-  @Get('info')
+  @Get('info/:autoIncrementId')
   @ApiOperation({ summary: '获取甘特图对象' })
   @ApiBearerAuth('auth')
-  async getInfo(@Payload('id') userId: number) {
+  async getInfo(
+    @Payload('id') userId: number,
+    @Param('autoIncrementId') autoIncrementId: number,
+  ) {
+    const convertedId = Number(autoIncrementId)
     return {
       success: true,
-      data: await this.ganttService.getInfo(userId),
+      data: await this.ganttService.getInfo(convertedId),
     };
   }
 

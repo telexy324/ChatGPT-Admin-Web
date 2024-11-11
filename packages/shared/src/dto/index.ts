@@ -1,4 +1,5 @@
 import z from 'zod';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export namespace AuthDTO {
   const email = z.string().email();

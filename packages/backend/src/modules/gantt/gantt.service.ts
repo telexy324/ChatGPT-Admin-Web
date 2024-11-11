@@ -14,7 +14,7 @@ export class GanttService {
 
   /* 获取用户信息 */
   async getInfo(autoIncrementId: number) {
-    const ganttObject = await this.prisma.client.ganttObject.findUnique({
+    return await this.prisma.client.ganttObject.findUnique({
       where: {
         autoIncrementId: autoIncrementId,
       },
